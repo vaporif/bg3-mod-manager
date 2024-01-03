@@ -94,6 +94,7 @@ mod xml {
         ModuleShortDesc,
     }
 
+    #[allow(clippy::upper_case_acronyms)]
     #[derive(Debug, Deserialize, Serialize)]
     pub enum AttributeType {
         Folder,
@@ -103,6 +104,7 @@ mod xml {
         Version64,
     }
 
+    #[allow(clippy::upper_case_acronyms, non_camel_case_types)]
     #[derive(Debug, Deserialize, Serialize)]
     pub enum AttributeDataType {
         FixedString,
