@@ -138,7 +138,7 @@ checksum = "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
 
 [[package]]
 name = "bg3-mod-manager"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "parking_lot",
  "quick-xml",

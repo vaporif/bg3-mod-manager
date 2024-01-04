@@ -1,10 +1,10 @@
 [package]
 name = "bg3-mod-manager"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+version = "0.1.0"
+description = "Baldurs Gate 3 Mod Manager"
+authors = ["Dmytro Onypko vaporif@gmailc.com"]
+license = "Apache2.0"
+repository = "https://github.com/vaporif/bg3-mod-manager"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
