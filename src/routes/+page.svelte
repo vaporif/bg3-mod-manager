@@ -1,23 +1,44 @@
 <script>
-  import { invoke } from '@tauri-apps/api/tauri'
-  import { Alert } from 'flowbite-svelte';
-  let name = ''
-  let greetMsg = ''
-
-  async function greet() {
-    greetMsg = await invoke('greet', { name })
-  }
+  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 </script>
-<div class="p-8">
-  <Alert>
-    <span class="font-medium">Info alert!</span>
-    Change a few things up and try submitting again.
-  </Alert>
-</div>
-<div>
-  <input id="greet-input" placeholder="Enter a name..." bind:value="{name}" />
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-  <button on:click="{greet}">Greet</button>
-  <p>{greetMsg}</p>
-</div>
+
+<Table hoverable={true} striped={true}>
+  <TableHead>
+    <TableHeadCell>Product name</TableHeadCell>
+    <TableHeadCell>Color</TableHeadCell>
+    <TableHeadCell>Category</TableHeadCell>
+    <TableHeadCell>Price</TableHeadCell>
+    <TableHeadCell>
+      <span class="sr-only">Edit</span>
+    </TableHeadCell>
+  </TableHead>
+  <TableBody class="divide-y">
+    <TableBodyRow>
+      <TableBodyCell>Apple MacBook Pro 17"</TableBodyCell>
+      <TableBodyCell>Sliver</TableBodyCell>
+      <TableBodyCell>Laptop</TableBodyCell>
+      <TableBodyCell>$2999</TableBodyCell>
+      <TableBodyCell>
+        <a href="/tables" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a>
+      </TableBodyCell>
+    </TableBodyRow>
+    <TableBodyRow>
+      <TableBodyCell>Microsoft Surface Pro</TableBodyCell>
+      <TableBodyCell>White</TableBodyCell>
+      <TableBodyCell>Laptop PC</TableBodyCell>
+      <TableBodyCell>$1999</TableBodyCell>
+      <TableBodyCell>
+        <a href="/tables" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a>
+      </TableBodyCell>
+    </TableBodyRow>
+    <TableBodyRow>
+      <TableBodyCell>Magic Mouse 2</TableBodyCell>
+      <TableBodyCell>Black</TableBodyCell>
+      <TableBodyCell>Accessories</TableBodyCell>
+      <TableBodyCell>$99</TableBodyCell>
+      <TableBodyCell>
+        <a href="/tables" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a>
+      </TableBodyCell>
+    </TableBodyRow>
+  </TableBody>
+</Table>

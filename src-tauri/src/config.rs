@@ -1,5 +1,5 @@
 use std::path::PathBuf;
 
-struct Config {
+pub struct Config {
     game_data_path: PathBuf,
 }
