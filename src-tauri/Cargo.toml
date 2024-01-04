@@ -21,6 +21,7 @@ zip = "0.6"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "parking_lot"] }
 parking_lot = { version = "0.12", features = ["deadlock_detection"] }
 toml = { version = "0.8", features = ["preserve_order"] }
+thiserror = "1"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
