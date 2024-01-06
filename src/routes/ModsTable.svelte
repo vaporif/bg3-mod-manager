@@ -13,7 +13,7 @@
   import { ArrowUpSolid, ArrowDownSolid } from 'flowbite-svelte-icons';
   import { slide } from 'svelte/transition';
 
-  const items = [
+  let items = [
     {
         "author": "Eldric Stormblade",
         "name": "Sorcerer's Grimoire",
@@ -84,17 +84,15 @@
 
   const changeOrder = (i: number, direction: "up" | 'down') => {
    switch(direction) {
-      case 'up': 
-         const posUp = items[i - 1];
-         items[i - 1] = items[i];
-         items[i] = posUp;
+      case 'down':
+        [items[i + 1], items[i]] = [items[i], items[i + 1]];
          break;
-      case 'down': 
-         const posDown = items[i + 1];
-         items[i + 1] = items[i];
-         items[i] = posDown;
+      case 'up': 
+        [items[i - 1], items[i]] = [items[i], items[i - 1]];
          break;
     } 
+
+    items = items
   }
 
 </script>
@@ -117,26 +115,26 @@
       </TableHeadCell>
     </TableHead>
     <TableBody class="divide-y">
-      {#each items as item, i}
+      {#each items as item, i (item.uuid)}
         <TableBodyRow on:click="{() => toggleRow(i)}"> 
           <TableBodyCell>{item.name}</TableBodyCell>
           <TableBodyCell>
-            {#if i != 0}
-              <Button on:click={(e) => {e.stopPropagation(); changeOrder(i, 'up');}}>
-                <ArrowUpSolid size="xs"/>
-              </Button>
-            {/if}
-              
             {#if i != items.length - 1}
               <Button on:click={(e) => {e.stopPropagation(); changeOrder(i, 'down');} }>
                 <ArrowDownSolid size="xs"/>
+              </Button>
+            {/if}
+              
+            {#if i != 0}
+              <Button on:click={(e) => {e.stopPropagation(); changeOrder(i, 'up');}}>
+                <ArrowUpSolid size="xs"/>
               </Button>
             {/if}
           </TableBodyCell>
         </TableBodyRow>
         {#if openRow === i}
           <TableBodyRow>
-            <TableBodyCell colspan="4" class="p-0">
+            <TableBodyCell colspan="2" class="p-0">
               <div class="px-2 py-3" transition:slide={{ duration: 300, axis: 'y' }}>
                 <div class="overflow-hidden shadow border">
                     <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
