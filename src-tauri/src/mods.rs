@@ -19,7 +19,6 @@ pub struct ZippedMod {
 }
 
 impl ZippedMod {
-    #[instrument]
     pub fn from_file(path: PathBuf) -> anyhow::Result<Self> {
         let file = std::fs::File::open(&path).context("open zip file")?;
 
@@ -43,7 +42,6 @@ impl ZippedMod {
         Ok(Self { path, info })
     }
 
-    #[instrument(skip(self))]
     pub fn unzip(self, path: PathBuf) -> anyhow::Result<()> {
         let file = std::fs::File::open(&path).context("open zip file")?;
         let mut zip = zip::read::ZipArchive::new(file).context("should be zip archive")?;

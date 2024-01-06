@@ -6,7 +6,6 @@
   export let onDrop: (files: string[]) => void = () => {
   }
 
-
   export let onHover: (files: string[]) => void = () => {
   }
 

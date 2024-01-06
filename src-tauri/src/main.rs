@@ -8,14 +8,14 @@ mod mods;
 pub mod prelude;
 
 use commands::*;
+use prelude::*;
 use tauri::{CustomMenuItem, Menu, Submenu};
-use tracing::info;
+use tauri_plugin_log::LogTarget;
 
 const QUIT_MENU_EVENT: &str = "quit";
 const ADD_MOD_MENU_EVENT: &str = "add_mod";
 
 fn main() {
-    tracing_subscriber::fmt::init();
     info!("Started");
     tauri::Builder::default()
         .menu(menu())
@@ -29,6 +29,11 @@ fn main() {
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![files_dropped, save_settings])
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
+                .build(),
+        )
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
