@@ -1,20 +1,14 @@
 <script lang="ts">
 	import '../app.pcss';
-  import { DarkMode, Navbar } from 'flowbite-svelte';
+  import { DarkMode } from 'flowbite-svelte';
 
   import { Tabs, TabItem } from 'flowbite-svelte';
 	import Settings from './Settings.svelte';
 	import ModsTable from './ModsTable.svelte';
 
 </script>
-  <div> 
-    <DarkMode class="float-right mr-5" />
-<!--   <div class="float-right"> -->
-<!--     <DarkMode /> -->
-<!--   </div> -->
-<!-- </Navbar> -->
+<DarkMode class="float-right mr-5" />
 <Tabs style="underline">
-<!-- <Navbar> -->
   <TabItem open title="Mods">
     <ModsTable/>
   </TabItem>
@@ -22,6 +16,5 @@
     <Settings/>
   </TabItem>
 </Tabs>
-</div>
 
 <slot />

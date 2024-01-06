@@ -76,38 +76,31 @@
     }
 ];
 
-  let openRow
+  let openRow: number | null = null;
 
-  const toggleRow = (i) => {
+  const toggleRow = (i: number) => {
     openRow = openRow === i ? null : i
   }
 
-  const moveUp = (i) => {
-  
+  const changeOrder = (i: number, direction: "up" | 'down') => {
+   switch(direction) {
+      case 'up': 
+         const posUp = items[i - 1];
+         items[i - 1] = items[i];
+         items[i] = posUp;
+         break;
+      case 'down': 
+         const posDown = items[i + 1];
+         items[i + 1] = items[i];
+         items[i] = posDown;
+         break;
+    } 
   }
 
-
-  const moveDown = (i) => {
-  
-  }
-
-
-  const dropHandle = (event:any) => {
-    event.preventDefault();
-    if (event.dataTransfer.items) {
-      [...event.dataTransfer.items].forEach((item, i) => {
-        if (item.kind === 'file') {
-          const file = item.getAsFile();
-          alert(file.name);
-        }
-      });
-    }
-  };
 </script>
 
 {#if items.length == 0}
 <Dropzone
-  on:drop={dropHandle}
   on:dragover={(event) => {
     event.preventDefault();
   }}>
@@ -116,8 +109,7 @@
   <p class="text-xs text-gray-500 dark:text-gray-400">zip file</p>
 </Dropzone>
 {:else}
-<Table
-  on:drop={dropHandle}>
+<Table>
     <TableHead>
       <TableHeadCell>Name</TableHeadCell>
       <TableHeadCell>
@@ -126,17 +118,17 @@
     </TableHead>
     <TableBody class="divide-y">
       {#each items as item, i}
-        <TableBodyRow on:click={() => toggleRow(i)}>
+        <TableBodyRow on:click="{() => toggleRow(i)}"> 
           <TableBodyCell>{item.name}</TableBodyCell>
           <TableBodyCell>
             {#if i != 0}
-              <Button on:click={(e) => {e.stopPropagation(); moveUp(i);}}>
+              <Button on:click={(e) => {e.stopPropagation(); changeOrder(i, 'up');}}>
                 <ArrowUpSolid size="xs"/>
               </Button>
             {/if}
               
             {#if i != items.length - 1}
-              <Button on:click={(e) => {e.stopPropagation(); moveDown(i);} }>
+              <Button on:click={(e) => {e.stopPropagation(); changeOrder(i, 'down');} }>
                 <ArrowDownSolid size="xs"/>
               </Button>
             {/if}
