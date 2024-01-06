@@ -3,7 +3,9 @@
   import { FolderSolid } from 'flowbite-svelte-icons';
   import { open } from '@tauri-apps/api/dialog';
 
-  let game_data_path = "";
+  import { invoke } from '@tauri-apps/api/tauri'
+
+  let gameDataPath = "";
 
   async function selectDirectory(): Promise<string | null> {
     const selectedDir = await open({
@@ -17,18 +19,23 @@
   const setGamePath = async () => {
     const dir = await selectDirectory();
     if (dir) {
-      game_data_path = dir;
+      gameDataPath = dir;
     }
   };
+
+  const handleSubmit = async () => {
+    let result = await invoke("save_settings", {game_data_path: gameDataPath });
+  };
+
 </script>
 
-<form>
+<form on:submit|preventDefault={handleSubmit}>
  <div class="grid gap-6 mb-6 md:grid-cols-2">
     <div>
       <Label for="game_data_path" class="mb-2">Game Data Path</Label>
       <ButtonGroup class="w-full" size="sm">
         <InputAddon><FolderSolid/></InputAddon>
-        <Input type="text" id="game_data_path" bind:value="{game_data_path}" required />
+        <Input type="text" id="game_data_path" bind:value="{gameDataPath}" required />
         <Button on:click="{setGamePath}">Choose</Button>
       </ButtonGroup>
     </div>

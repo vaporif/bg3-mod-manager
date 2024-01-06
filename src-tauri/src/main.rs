@@ -28,7 +28,7 @@ fn main() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![files_dropped])
+        .invoke_handler(tauri::generate_handler![files_dropped, save_settings])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
