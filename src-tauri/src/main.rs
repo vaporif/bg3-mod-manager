@@ -3,8 +3,9 @@
 
 mod commands;
 pub mod config;
+pub mod error;
 mod mods;
-mod prelude;
+pub mod prelude;
 
 use commands::greet;
 use tauri::{CustomMenuItem, Menu, Submenu};

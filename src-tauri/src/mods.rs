@@ -1,12 +1,99 @@
 use std::fs;
 use std::io::Write;
-use std::path::{self, PathBuf};
+use std::path::PathBuf;
+
+use anyhow::{bail, Context};
 
 use quick_xml::{de, se};
-use serde;
+
+use self::json::ModInfo;
+use crate::prelude::*;
 
 mod json;
 mod xml;
+
+pub struct Modarchive {
+    path: PathBuf,
+    pub info: ModInfo,
+}
+
+impl Modarchive {
+    #[instrument]
+    pub fn from_file(path: PathBuf) -> anyhow::Result<Self> {
+        let file = std::fs::File::open(&path).context("open zip file")?;
+
+        let mut zip = zip::read::ZipArchive::new(file).context("should be zip archive")?;
+
+        let info_json = zip.by_name("info.json").context("seaching for info.json")?;
+
+        let mut mods_list: crate::mods::json::Mods =
+            serde_json::from_reader(info_json).context("parsing info_json")?;
+
+        if mods_list.mods.len() != 1 {
+            bail!("Only single file per zip supported");
+        }
+
+        let info = mods_list
+            .mods
+            .drain(..)
+            .next()
+            .ok_or_else(|| anyhow::anyhow!("No elements in mods list"))?;
+
+        Ok(Self { path, info })
+    }
+
+    #[instrument(skip(self))]
+    pub fn unzip(self, path: PathBuf) -> anyhow::Result<()> {
+        let file = std::fs::File::open(&path).context("open zip file")?;
+        let mut zip = zip::read::ZipArchive::new(file).context("should be zip archive")?;
+        for i in 0..zip.len() {
+            let mut file = zip.by_index(i).unwrap();
+            let outpath = match file.enclosed_name() {
+                Some(path) => path.to_owned(),
+                None => continue,
+            };
+
+            {
+                let comment = file.comment();
+                if !comment.is_empty() {
+                    println!("File {i} comment: {comment}");
+                }
+            }
+
+            if (*file.name()).ends_with('/') {
+                println!("File {} extracted to \"{}\"", i, outpath.display());
+                fs::create_dir_all(&outpath).unwrap();
+            } else {
+                info!(
+                    "File {} extracted to \"{}\" ({} bytes)",
+                    i,
+                    outpath.display(),
+                    file.size()
+                );
+                if let Some(p) = outpath.parent() {
+                    if !p.exists() {
+                        fs::create_dir_all(p).unwrap();
+                    }
+                }
+                let mut outfile = fs::File::create(&outpath)
+                    .with_context(|| format!("creating file from zip {}", outpath.display()))?;
+                std::io::copy(&mut file, &mut outfile)
+                    .with_context(|| format!("copying mod zip file {}", outpath.display()))?;
+            }
+
+            // Get and Set permissions
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+
+                if let Some(mode) = file.unix_mode() {
+                    fs::set_permissions(&outpath, fs::Permissions::from_mode(mode)).unwrap();
+                }
+            }
+        }
+        Ok(())
+    }
+}
 
 pub struct ModSettingFile {
     path: PathBuf,
