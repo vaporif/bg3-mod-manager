@@ -12,12 +12,13 @@ use crate::prelude::*;
 mod json;
 mod xml;
 
-pub struct Modarchive {
+#[derive(Debug)]
+pub struct ZippedMod {
     path: PathBuf,
     pub info: ModInfo,
 }
 
-impl Modarchive {
+impl ZippedMod {
     #[instrument]
     pub fn from_file(path: PathBuf) -> anyhow::Result<Self> {
         let file = std::fs::File::open(&path).context("open zip file")?;
