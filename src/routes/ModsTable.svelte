@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { invoke } from '@tauri-apps/api/tauri'
   import { Button } from 'flowbite-svelte';
   import {
     Table,
@@ -95,9 +96,14 @@
     items = items;
   }
 
+  const onDrop = (filePaths: string[]) => {
+    alert(filePaths);
+    // invoke('files-dropped', { filePaths }); 
+  };
+
 </script>
 
-<FileDrop onDrop="{(files) => alert(files)}">
+<FileDrop {onDrop}>
 {#if items.length == 0}
 <button class ="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
   <label class="flex flex-col items-center" tabIndex="0">
