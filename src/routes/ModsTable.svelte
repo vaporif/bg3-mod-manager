@@ -91,6 +91,8 @@
         [items[i - 1], items[i]] = [items[i], items[i - 1]];
          break;
     } 
+
+    items = items;
   }
 
 </script>
