@@ -5,7 +5,7 @@ use tauri::{Builder, State, Wry};
 use crate::mods::{Mod, ZippedMod};
 use crate::prelude::*;
 use crate::settings::Settings;
-use crate::state::Store;
+use crate::state::{Store, Event};
 
 pub fn register_command_handlers(builder: Builder<Wry>) -> Builder<Wry> {
     // Specta generating typed binding interfaces
@@ -19,7 +19,12 @@ pub fn register_command_handlers(builder: Builder<Wry>) -> Builder<Wry> {
         ],
         "../src/lib/ipc.ts",
     )
-    .expect("unable to generate specta types");
+    .expect("unable to generate ts typings for commands");
+
+    // tauri_specta::ts::export(
+    //     specta::ts::export::<Event>(&ExportConfiguration::default()).unwrap(), 
+    //     "../src/lib/events.ts")
+    // .expect("unable to generate ts typings for events");
 
     builder.invoke_handler(tauri::generate_handler![
         add_mod_files,

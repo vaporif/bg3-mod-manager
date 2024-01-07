@@ -7,7 +7,7 @@ use crate::prelude::*;
 
 use crate::{mods::Mod, settings::Settings};
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, specta::Type)]
 pub enum Event {
     SettingsUpdated(Settings),
     ModfilesParsed(Vec<ModInfo>),
