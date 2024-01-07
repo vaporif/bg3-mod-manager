@@ -12,7 +12,7 @@ use crate::prelude::*;
 
 mod json;
 mod xml;
-use json::ModInfo;
+pub use json::ModInfo;
 
 #[derive(Debug)]
 pub struct ZippedMod {
@@ -102,7 +102,7 @@ pub struct ModSettingFile {
     mods: Vec<Mod>,
 }
 
-#[derive(Deserialize, Type)]
+#[derive(Debug, Deserialize, Type)]
 pub struct Mod {
     uuid: String,
     folder: String,

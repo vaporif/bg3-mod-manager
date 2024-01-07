@@ -181,6 +181,7 @@ dependencies = [
  "tauri-plugin-log",
  "tauri-specta",
  "thiserror",
+ "tokio",
  "toml 0.8.8",
  "zip",
 ]

@@ -21,7 +21,7 @@ lazy_static! {
     pub static ref DEFAULT_GAME_PATH: PathBuf = { todo!() };
 }
 
-#[derive(Deserialize, Serialize, Type)]
+#[derive(Debug, Deserialize, Serialize, Type, Clone)]
 pub struct Settings {
     pub game_data_path: Option<PathBuf>,
 }

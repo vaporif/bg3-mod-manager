@@ -9,17 +9,21 @@ pub mod settings;
 mod state;
 
 use commands::register_command_handlers;
+use log::error;
 use state::load_state;
-use tauri::{CustomMenuItem, Menu, Submenu};
+use tauri::{CustomMenuItem, Menu, Submenu, Manager};
 use tauri_plugin_log::LogTarget;
 
 const QUIT_MENU_EVENT: &str = "quit";
 const ADD_MOD_MENU_EVENT: &str = "add_mod";
 
 fn main() {
+    let (send_event_tx, mut emit_event_rx) = 
+        tokio::sync::mpsc::channel::<crate::state::Event>(1);
+
     let app = tauri::Builder::default();
     let app = register_command_handlers(app);
-    let app = load_state(app);
+    let app = load_state(app, send_event_tx);
 
     app.menu(menu())
         .on_menu_event(|event| match event.menu_item_id() {
@@ -30,6 +34,20 @@ fn main() {
                 todo!()
             }
             _ => {}
+        })
+        .setup(|app| {
+            let app_handle = app.handle();
+            tauri::async_runtime::spawn(async move {
+                loop {
+                    if let Some(event) = emit_event_rx.recv().await {
+                        if let Err(e) = app_handle.emit_all(event.event_name(), &event) {
+                            error!("emit event {event:?} failed, error: {e}");
+                        }
+                    }
+                }
+            });
+
+            Ok(())
         })
         .plugin(
             tauri_plugin_log::Builder::default()
