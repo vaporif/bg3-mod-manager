@@ -35,7 +35,7 @@
     unlisten()
   });
 
-  const fileDrop = event.listen('tauri://file-drop', (e) => {
+  const fileDropPromise = event.listen('tauri://file-drop', (e) => {
     const payload = e.payload as string[]
     let files = getValidPaths(payload)
     if (files.length > 0) {
@@ -44,7 +44,7 @@
   });
 
   onDestroy(async () => {
-    const unlisten = await fileDrop
+    const unlisten = await fileDropPromise
     unlisten()
   });
 
