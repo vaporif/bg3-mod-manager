@@ -6,6 +6,9 @@ const _settings = writable({ game_data_path: "" } as Settings);
 const _mods = writable(modsInit());
 
 export async function subscribeToTauriEvents() {
+  await listen<Settings>("Event", (event) => {
+    alert(`${JSON.stringify(event)}`);
+  });
   let unsubscribeSettingsUpdates = await listen<Settings>("settings-event", (event) => {
     console.log(`settings-event ${event}`);
     _settings.set(event.payload);
@@ -16,8 +19,9 @@ export async function subscribeToTauriEvents() {
     _mods.set(event.payload);
   });
 
-  return {
-    unsubscribeSettingsUpdates, unsubscribeModsUpdates
+  return () => {
+    unsubscribeSettingsUpdates();
+    unsubscribeModsUpdates();
   };
 };
 

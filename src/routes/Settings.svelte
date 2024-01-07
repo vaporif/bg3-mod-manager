@@ -4,8 +4,9 @@
   import { open } from '@tauri-apps/api/dialog';
 
   import { settings } from '$lib';
+	import { onDestroy } from 'svelte';
 
-  $: gameDataPath = $settings.game_data_path;
+  let gameDataPath = "";
 
   async function selectDirectory(): Promise<string | null> {
     const selectedDir = await open({
@@ -24,10 +25,13 @@
     }
   };
 
+  const unsubscribe = settings.subscribe(val => gameDataPath = val.game_data_path);
+
   const handleSubmit = async () => {
     await settings.saveSettings({game_data_path: gameDataPath});
   };
 
+  onDestroy(() => unsubscribe());
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>

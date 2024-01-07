@@ -12,6 +12,7 @@ pub enum Event {
     SettingsUpdated(Settings),
     ModfilesParsed(Vec<ModInfo>),
     ModsUpdated,
+    Event
 }
 impl Event {
     pub fn event_name(&self) -> &str {
@@ -19,6 +20,7 @@ impl Event {
             Event::SettingsUpdated(_) => "SettingsUpdated",
             Event::ModfilesParsed(_) => "ModfilesParsed",
             Event::ModsUpdated => "ModsUpdated",
+            Event::Event => "Event"
         }
     }
 }
@@ -45,12 +47,15 @@ impl Store {
     }
     pub async fn update_settings(&self, new: Settings) -> Result<()> {
         self.settings.write().game_data_path = new.game_data_path;
+        let settings  = self.settings.read().clone(); 
 
         // TODO: Proper error
         self.send_events_tx
-            .send(Event::SettingsUpdated(self.settings.read().clone())).await.map_err(|e|{
-            Error::Other(e.to_string())
-        })?;
+            .send(Event::SettingsUpdated(settings)).await;
         Ok(())
+    }
+
+    pub async fn test_notify(&self) {
+        self.send_events_tx.send(Event::Event).await;
     }
 }

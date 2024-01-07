@@ -51,8 +51,9 @@ fn update_mods(mods: Vec<Mod>) {
 
 #[tauri::command]
 #[specta::specta]
-fn save_settings(settings: Settings, state: State<Store>) -> Result<()> {
-    state.update_settings(settings);
+async fn save_settings<'s>(settings: Settings, state: State<'s, Store>) -> Result<()> {
+    state.test_notify().await;
+    state.update_settings(settings).await;
 
     Ok(())
 
