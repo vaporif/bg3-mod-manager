@@ -25,6 +25,10 @@ md5 = "0.7.0"
 anyhow = { version = "1.0", features = ["backtrace"] }
 log = "0.4"
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+home = "0.5.9"
+lazy_static = "1.4"
+specta = "1.0.5"
+tauri-specta = { version = "1.0.2", features = ["javascript", "typescript"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

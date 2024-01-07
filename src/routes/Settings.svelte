@@ -3,14 +3,15 @@
   import { FolderSolid } from 'flowbite-svelte-icons';
   import { open } from '@tauri-apps/api/dialog';
 
-  import { invoke } from '@tauri-apps/api/tauri'
+  import { settings } from '$lib';
 
-  let gameDataPath = "";
+  $: gameDataPath = $settings.game_data_path;
 
   async function selectDirectory(): Promise<string | null> {
     const selectedDir = await open({
       directory: true,
       multiple: false,
+      // defaultPath: gameDataPath
     });
 
     return selectedDir as string;
@@ -24,7 +25,7 @@
   };
 
   const handleSubmit = async () => {
-    let result = await invoke("save_settings", {game_data_path: gameDataPath });
+    settings.set({game_data_path: gameDataPath});
   };
 
 </script>

@@ -2,13 +2,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod commands;
-pub mod config;
 pub mod error;
 mod mods;
 pub mod prelude;
+pub mod settings;
+mod state;
 
-use commands::*;
-use prelude::*;
+use commands::register_command_handlers;
+use state::load_state;
 use tauri::{CustomMenuItem, Menu, Submenu};
 use tauri_plugin_log::LogTarget;
 
@@ -16,9 +17,11 @@ const QUIT_MENU_EVENT: &str = "quit";
 const ADD_MOD_MENU_EVENT: &str = "add_mod";
 
 fn main() {
-    info!("Started");
-    tauri::Builder::default()
-        .menu(menu())
+    let app = tauri::Builder::default();
+    let app = register_command_handlers(app);
+    let app = load_state(app);
+
+    app.menu(menu())
         .on_menu_event(|event| match event.menu_item_id() {
             QUIT_MENU_EVENT => {
                 std::process::exit(0);
@@ -28,7 +31,6 @@ fn main() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![files_dropped, save_settings])
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])

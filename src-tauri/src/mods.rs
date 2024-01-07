@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use anyhow::{bail, Context};
 
-use quick_xml::{de, se};
+use quick_xml::de;
 
 use self::json::ModInfo;
 use crate::prelude::*;
@@ -115,11 +115,11 @@ impl ModSettingFile {
         &self.mods
     }
 
-    pub async fn from_path(path: PathBuf) -> Self {
-        let xml_string = fs::read_to_string(&path).expect("file read");
-        let xml = de::from_str(&xml_string).expect("xml deserialized");
+    pub async fn from_path(path: PathBuf) -> anyhow::Result<Self> {
+        let xml_string = fs::read_to_string(&path).context("file read")?;
+        let xml = de::from_str(&xml_string).context("xml deserialized")?;
         let mods = Self::parse_mods(&xml);
-        Self { path, xml, mods }
+        Ok(Self { path, xml, mods })
     }
 
     pub async fn save(&self) {
