@@ -10,8 +10,12 @@ declare global {
 // Function avoids 'window not defined' in SSR
 const invoke = () => window.__TAURI_INVOKE__;
 
-export function filesDropped(filePaths: string[]) {
-    return invoke()<null>("files_dropped", { filePaths })
+export function addModFiles(filePaths: string[]) {
+    return invoke()<null>("add_mod_files", { filePaths })
+}
+
+export function updateMods(mods: Mod[]) {
+    return invoke()<null>("update_mods", { mods })
 }
 
 export function saveSettings(settings: Settings) {
@@ -22,4 +26,5 @@ export function getDefaultGameDataPath() {
     return invoke()<string>("get_default_game_data_path")
 }
 
+export type Mod = { uuid: string; folder: string; md5: string; name: string; version64: number; is_disabled: boolean; order: number }
 export type Settings = { game_data_path: string | null }

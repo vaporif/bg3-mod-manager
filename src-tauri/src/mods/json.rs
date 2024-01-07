@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "PascalCase")]
 pub struct ModInfo {
     pub author: String,
@@ -12,6 +12,10 @@ pub struct ModInfo {
     pub uuid: String,
     pub created: String,
     pub dependencies: Vec<String>,
+    #[serde(default)]
+    pub is_disabled: bool,
+    #[serde(default)]
+    pub order: u8,
     pub group: String,
 }
 
@@ -56,6 +60,8 @@ mod test {
                     description: "Description".to_string(),
                     uuid: "3fecde04-2f5d-4c6a-bb20-4ebd336472c2".to_string(),
                     created: "2023-09-11T05:01:15.0784029-06:00".to_string(),
+                    is_disabled: true,
+                    order: 0,
                     dependencies: vec![],
                     group: "57bacf0b-9ab7-4cd9-b7ed-40050ffa41df".to_string()
                 }],

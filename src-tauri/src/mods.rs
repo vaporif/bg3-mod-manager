@@ -5,12 +5,14 @@ use std::path::PathBuf;
 use anyhow::{bail, Context};
 
 use quick_xml::de;
+use serde::Deserialize;
+use specta::Type;
 
-use self::json::ModInfo;
 use crate::prelude::*;
 
 mod json;
 mod xml;
+use json::ModInfo;
 
 #[derive(Debug)]
 pub struct ZippedMod {
@@ -100,12 +102,14 @@ pub struct ModSettingFile {
     mods: Vec<Mod>,
 }
 
+#[derive(Deserialize, Type)]
 pub struct Mod {
     uuid: String,
     folder: String,
     md5: String,
     name: String,
-    version64: u64,
+    // TODO: is it u64??
+    version64: u32,
     is_disabled: bool,
     order: u16,
 }

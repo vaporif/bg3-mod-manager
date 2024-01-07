@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use tauri::{Builder, State, Wry};
 
-use crate::mods::ZippedMod;
+use crate::mods::{Mod, ZippedMod};
 use crate::prelude::*;
 use crate::settings::Settings;
 use crate::state::Store;
@@ -11,13 +11,19 @@ pub fn register_command_handlers(builder: Builder<Wry>) -> Builder<Wry> {
     // Specta generating typed binding interfaces
     #[cfg(debug_assertions)]
     tauri_specta::ts::export(
-        specta::collect_types![files_dropped, save_settings, get_default_game_data_path],
-        "../src/lib/dto.ts",
+        specta::collect_types![
+            add_mod_files,
+            update_mods,
+            save_settings,
+            get_default_game_data_path,
+        ],
+        "../src/lib/ipc.ts",
     )
     .expect("unable to generate specta types");
 
     builder.invoke_handler(tauri::generate_handler![
-        files_dropped,
+        add_mod_files,
+        update_mods,
         save_settings,
         get_default_game_data_path
     ])
@@ -25,7 +31,7 @@ pub fn register_command_handlers(builder: Builder<Wry>) -> Builder<Wry> {
 
 #[tauri::command]
 #[specta::specta]
-fn files_dropped(file_paths: Vec<PathBuf>) {
+fn add_mod_files(file_paths: Vec<PathBuf>) {
     for file in file_paths {
         let file = ZippedMod::from_file(file);
         info!("{:?}", &file);
@@ -34,8 +40,16 @@ fn files_dropped(file_paths: Vec<PathBuf>) {
 
 #[tauri::command]
 #[specta::specta]
-fn save_settings(settings: Settings, state: State<Store>) {
+fn update_mods(mods: Vec<Mod>) {
+    todo!()
+}
+
+#[tauri::command]
+#[specta::specta]
+fn save_settings(settings: Settings, state: State<Store>) -> Result<()> {
     state.update_settings(settings);
+
+    Ok(())
 
     // if !new_path.exists() {
     //     bail!("Path not found");

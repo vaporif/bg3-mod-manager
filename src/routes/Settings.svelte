@@ -25,7 +25,7 @@
   };
 
   const handleSubmit = async () => {
-    settings.set({game_data_path: gameDataPath});
+    await settings.saveSettings({game_data_path: gameDataPath});
   };
 
 </script>

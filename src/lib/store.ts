@@ -1,17 +1,17 @@
 import { listen } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api/tauri'
+import { addModFiles, saveSettings, updateMods } from './ipc';
 import { writable } from 'svelte/store';
 
 const _settings = writable({ game_data_path: "" } as Settings);
 const _mods = writable(modsInit());
 
 export async function subscribeToTauriEvents() {
-  let unsubscribeSettingsUpdates = listen<Settings>("settings-event", (event) => {
+  let unsubscribeSettingsUpdates = await listen<Settings>("settings-event", (event) => {
     console.log(`settings-event ${event}`);
     _settings.set(event.payload);
   });
 
-  let unsubscribeModsUpdates = listen<Mod[]>("mods-event", (event) => {
+  let unsubscribeModsUpdates = await listen<Mod[]>("mods-event", (event) => {
     console.log(`mods-event ${event}`);
     _mods.set(event.payload);
   });
@@ -24,17 +24,14 @@ export async function subscribeToTauriEvents() {
 
 export const settings = {
   subscribe: _settings.subscribe,
-  set: async (value: Settings) => {
-    return await invoke('save_settings', { ...value });
-  }
+  saveSettings
 }
 
 
 export const mods = {
   subscribe: _mods.subscribe,
-  set: async (value: Mod[]) => {
-    return await invoke('save_mods', { ...value });
-  }
+  addModFiles,
+  updateMods
 }
 
 interface Settings {

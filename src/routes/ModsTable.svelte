@@ -37,8 +37,7 @@
   }
 
   const onDrop = async (filePaths: string[]) => {
-    // let s = await invoke('files_dropped', { filePaths });
-    alert(s);
+    await mods.addModFiles(filePaths);
   };
 
 </script>
