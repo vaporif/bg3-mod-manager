@@ -2,11 +2,20 @@
   import { event } from '@tauri-apps/api'
   import { onDestroy } from 'svelte'
 
-  export let extensions: null | string[] = null
-  export let onDrop: (files: string[]) => void = () => {
+  let hoveredElement: HTMLElement | null = null;
+  function handleMouseEnter(event: MouseEvent) {
+    hoveredElement = event.target as HTMLElement;
   }
 
-  export let onHover: (files: string[]) => void = () => {
+  function handleMouseLeave() {
+    hoveredElement = null;
+  }
+
+  export let extensions: null | string[] = null
+  export let onDrop: (files: string[], target: EventTarget | null) => void = () => {
+  }
+
+  export let onHover: (files: string[], target: EventTarget | null) => void = () => {
   }
 
   function getValidPaths(paths: string[]) {
@@ -27,7 +36,7 @@
 
   const fileDropHover = event.listen('tauri://file-drop-hover', (e) => {
     let files = getValidPaths(e.payload as string[]);
-    onHover(files);
+    onHover(files, hoveredElement);
   });
   
   onDestroy(async () => {
@@ -39,7 +48,7 @@
     const payload = e.payload as string[]
     let files = getValidPaths(payload)
     if (files.length > 0) {
-      onDrop(files)
+      onDrop(files, hoveredElement)
     }
   });
 
@@ -50,4 +59,8 @@
 
 </script>
 
-<slot/>
+<div style="display: contents;" aria-roledescription="drag-n-drop-tracker" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+  <slot />
+</div>
+
+<p>Currently hovering over: {hoveredElement ? hoveredElement.tagName : 'Nothing'}</p>
