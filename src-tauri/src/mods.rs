@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use anyhow::{bail, Context};
 
 use quick_xml::de;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use specta::Type;
 
 use crate::prelude::*;
@@ -16,17 +16,55 @@ pub use json::ModInfo;
 
 #[derive(Debug)]
 pub struct ZippedMod {
-    path: PathBuf,
+    pub path: PathBuf,
     pub info: ModInfo,
+    pub md5: String
+}
+
+#[derive(Serialize, Deserialize, Type)]
+pub struct InstalledMod {
+    pub author: String,
+    pub name: String,
+    pub folder: String,
+    pub version: Option<String>,
+    pub description: String,
+    pub uuid: String,
+    pub created: String,
+    pub dependencies: Vec<String>,
+    pub group: String,
+    pub md5: String,
+    pub order: u8,
+    pub is_enabled: bool
+}
+
+impl From<ZippedMod> for InstalledMod {
+    fn from(value: ZippedMod) -> Self {
+        InstalledMod {
+            author: value.info.author,
+            name: value.info.name,
+            folder: value.info.folder,
+            version: value.info.version,
+            description: value.info.description,
+            uuid: value.info.uuid,
+            created: value.info.created,
+            dependencies: value.info.dependencies,
+            group: value.info.group,
+            md5: value.md5,
+            order: 0, 
+            is_enabled: false
+        }
+    }
 }
 
 impl ZippedMod {
     pub fn from_file(path: PathBuf) -> anyhow::Result<Self> {
-        let file = std::fs::File::open(&path).context("open zip file")?;
+        let file = std::fs::File::open(&path)?;
 
-        let mut zip = zip::read::ZipArchive::new(file).context("should be zip archive")?;
+        let mut zip = zip::read::ZipArchive::new(file).context("reading mod zip file")?;
 
-        let info_json = zip.by_name("info.json").context("seaching for info.json")?;
+        let info_json = zip
+            .by_name("info.json")
+            .context("looking for info.json file in zip archive")?;
 
         let mut mods_list: crate::mods::json::Mods =
             serde_json::from_reader(info_json).context("parsing info_json")?;
@@ -41,7 +79,7 @@ impl ZippedMod {
             .next()
             .ok_or_else(|| anyhow::anyhow!("No elements in mods list"))?;
 
-        Ok(Self { path, info })
+        Ok(Self { path, info, md5: mods_list.md5 })
     }
 
     pub fn unzip(self, path: PathBuf) -> anyhow::Result<()> {
@@ -115,10 +153,6 @@ pub struct Mod {
 }
 
 impl ModSettingFile {
-    pub fn mods(&self) -> &Vec<Mod> {
-        &self.mods
-    }
-
     pub async fn from_path(path: PathBuf) -> anyhow::Result<Self> {
         let xml_string = fs::read_to_string(&path).context("file read")?;
         let xml = de::from_str(&xml_string).context("xml deserialized")?;
@@ -166,6 +200,10 @@ impl ModSettingFile {
 
     fn mods_to_xml(mods: &Vec<Mod>) -> xml::Save {
         todo!()
+    }
+
+    pub fn mods(&self) -> &Vec<Mod> {
+        &self.mods
     }
 }
 

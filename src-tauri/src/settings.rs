@@ -33,7 +33,3 @@ impl Default for Settings {
         }
     }
 }
-
-// pub fn modsettings_path(game_data_path: &Option<PathBuf>) -> Option<PathBuf> {
-//     game_data_path.and_then(|p| Some(p.join("/PlayerProfiles/Public/modsettings.lsx")))
-// }

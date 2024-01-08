@@ -11,7 +11,7 @@ declare global {
 const invoke = () => window.__TAURI_INVOKE__;
 
 export function addModFiles(filePaths: string[]) {
-    return invoke()<null>("add_mod_files", { filePaths })
+    return invoke()<AddModFileResult>("add_mod_files", { filePaths })
 }
 
 export function updateMods(mods: Mod[]) {
@@ -26,5 +26,8 @@ export function getDefaultGameDataPath() {
     return invoke()<string>("get_default_game_data_path")
 }
 
-export type Mod = { uuid: string; folder: string; md5: string; name: string; version64: number; is_disabled: boolean; order: number }
+export type InstalledMod = { author: string; name: string; folder: string; version: string | null; description: string; uuid: string; created: string; dependencies: string[]; group: string; md5: string; order: number; is_enabled: boolean }
+export type AddModFileResult = { valid_files: InstalledMod[]; invalid_files: ModFileAddError[] }
 export type Settings = { game_data_path: string | null }
+export type ModFileAddError = { path: string; error: string }
+export type Mod = { uuid: string; folder: string; md5: string; name: string; version64: number; is_disabled: boolean; order: number }

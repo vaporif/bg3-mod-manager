@@ -53,7 +53,7 @@ interface Mod {
   created: String,
   dependencies: String[],
   group: String,
-  is_disabled: boolean,
+  is_enabled: boolean,
   order: number,
 }
 
@@ -69,7 +69,7 @@ function modsInit(): Mod[] {
       "created": "2023-10-15T08:30:45.1234567-06:00",
       "dependencies": [],
       "group": "57bacf0b-9ab7-4cd9-b7ed-40050ffa41df",
-      "is_disabled": false,
+      "is_enabled": true,
       "order": 0,
       "md5": "a1b2c3d4e5f6g7h8i9j0"
     },
@@ -83,7 +83,7 @@ function modsInit(): Mod[] {
       "created": "2023-11-20T14:45:30.9876543-06:00",
       "dependencies": [],
       "group": "57bacf0b-9ab7-4cd9-b7ed-40050ffa41df",
-      "is_disabled": false,
+      "is_enabled": true,
       "order": 0,
       "md5": "b2a3c4d5e6f7g8h9i0j1k2l3"
     },
@@ -97,7 +97,7 @@ function modsInit(): Mod[] {
       "created": "2023-12-25T18:15:10.3456789-06:00",
       "dependencies": [],
       "group": "57bacf0b-9ab7-4cd9-b7ed-40050ffa41df",
-      "is_disabled": false,
+      "is_enabled": true,
       "order": 0,
       "md5": "c3d4e5f6g7h8i9j0k1l2m3"
     },
@@ -111,7 +111,7 @@ function modsInit(): Mod[] {
       "created": "2023-08-05T10:20:35.5678901-06:00",
       "dependencies": [],
       "group": "57bacf0b-9ab7-4cd9-b7ed-40050ffa41df",
-      "is_disabled": false,
+      "is_enabled": false,
       "order": 0,
       "md5": "d4e5f6g7h8i9j0k1l2m3n4"
     },
@@ -125,7 +125,7 @@ function modsInit(): Mod[] {
       "created": "2023-07-10T12:55:20.2345678-06:00",
       "dependencies": [],
       "group": "57bacf0b-9ab7-4cd9-b7ed-40050ffa41df",
-      "is_disabled": false,
+      "is_enabled": false,
       "order": 0,
       "md5": "e5f6g7h8i9j0k1l2m3n4o5"
     }

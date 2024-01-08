@@ -11,15 +11,14 @@ mod state;
 use commands::register_command_handlers;
 use log::error;
 use state::load_state;
-use tauri::{CustomMenuItem, Menu, Submenu, Manager};
+use tauri::{CustomMenuItem, Manager, Menu, Submenu};
 use tauri_plugin_log::LogTarget;
 
 const QUIT_MENU_EVENT: &str = "quit";
 const ADD_MOD_MENU_EVENT: &str = "add_mod";
 
 fn main() {
-    let (send_event_tx, mut emit_event_rx) = 
-        tokio::sync::mpsc::channel::<crate::state::Event>(1);
+    let (send_event_tx, mut emit_event_rx) = tokio::sync::mpsc::channel::<crate::state::Event>(1);
 
     let app = tauri::Builder::default();
     let app = register_command_handlers(app);
