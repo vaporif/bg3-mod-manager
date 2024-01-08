@@ -63,4 +63,3 @@
   <slot />
 </div>
 
-<p>Currently hovering over: {hoveredElement ? hoveredElement.tagName : 'Nothing'}</p>

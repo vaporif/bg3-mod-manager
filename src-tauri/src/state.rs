@@ -54,13 +54,14 @@ impl Store {
 
         let modsetting_path = modsettings_path(&game_data_path);
 
-        let modsettingFile = ModSettingFile::from_path(modsetting_path);
+        let modsettingFile = 
+            ModSettingFile::from_path(modsetting_path).await.map_err(|_| Error::Other("Not found".to_string()))?;
 
         self.settings.write().game_data_path = Some(game_data_path);
         let settings  = self.settings.read().clone(); 
 
         // TODO: Proper error
-        self.send_events_tx
+        let _ = self.send_events_tx
             .send(Event::SettingsUpdated(settings)).await;
         Ok(())
     }

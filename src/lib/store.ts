@@ -28,7 +28,9 @@ export async function subscribeToTauriEvents() {
 
 export const settings = {
   subscribe: _settings.subscribe,
-  saveSettings
+  saveSettings: (value: Settings) => {
+    saveSettings(value);
+  }
 }
 
 
