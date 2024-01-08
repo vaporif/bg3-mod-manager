@@ -1,5 +1,5 @@
 import { listen } from '@tauri-apps/api/event';
-import { addModFiles, saveSettings, updateMods } from './ipc';
+import { addModFiles, saveSettings, updateMods, type InstalledMod, type Settings } from './ipc';
 import { writable } from 'svelte/store';
 
 const _settings = writable({ game_data_path: "" } as Settings);
@@ -38,26 +38,7 @@ export const mods = {
   updateMods
 }
 
-interface Settings {
-  game_data_path: string,
-}
-
-interface Mod {
-  author: String,
-  name: String,
-  uuid: String,
-  folder: String,
-  md5: String,
-  description: String,
-  version: String | null,
-  created: String,
-  dependencies: String[],
-  group: String,
-  is_enabled: boolean,
-  order: number,
-}
-
-function modsInit(): Mod[] {
+function modsInit(): InstalledMod[] {
   return [
     {
       "author": "Eldric Stormblade",
